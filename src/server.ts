@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { filterImageFromURL, deleteLocalFiles } from './util/util';
+import { filterImageFromURL, deleteLocalFiles, isValidUrl } from './util/util';
 
 (async () => {
 	// Init the Express application
@@ -16,6 +16,21 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
 	// GET /filteredimage?image_url={{URL}}
 	// endpoint to filter an image from a public url.
 	// IT SHOULD
+	app.get('/filteredimage', async (req, res) => {
+		const image_url = req.query.image_url;
+		const valid_url = isValidUrl(image_url);
+		if (!isValidUrl) res.send('invalid url');
+
+		console.log('valid');
+
+		// const image = await filterImageFromURL(
+		// 	'https://cdn.soccerladuma.co.za/cms2/image_manager/uploads/News/659137/7/1563185725_07b1c.jpg',
+		// );
+
+		// res.sendFile(image);
+		console.log(req.url);
+		res.send(image_url);
+	});
 	//    1
 	//    1. validate the image_url query
 	//    2. call filterImageFromURL(image_url) to filter the image
@@ -33,7 +48,6 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
 	// Root Endpoint
 	// Displays a simple message to the user
 	app.get('/', async (req, res) => {
-		console.log('hello');
 		res.send('try GET /filteredimage?image_url={{}}');
 	});
 
