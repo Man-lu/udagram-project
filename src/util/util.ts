@@ -1,4 +1,6 @@
 import fs from 'fs';
+import path from 'path';
+
 import Jimp = require('jimp');
 
 // filterImageFromURL

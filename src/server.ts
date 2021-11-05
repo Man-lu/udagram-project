@@ -1,5 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+
+import fs from 'fs';
+import path from 'path';
+
 import { filterImageFromURL, deleteLocalFiles, isValidUrl } from './util/util';
 
 (async () => {
@@ -17,33 +21,26 @@ import { filterImageFromURL, deleteLocalFiles, isValidUrl } from './util/util';
 	// endpoint to filter an image from a public url.
 	// IT SHOULD
 	app.get('/filteredimage', async (req, res) => {
-		const image_url = req.query.image_url;
-		const valid_url = isValidUrl(image_url);
-		if (!isValidUrl) res.send('invalid url');
+		const image_url: string = req.query.image_url;
+		const valid_url: boolean = isValidUrl(image_url);
+		if (!valid_url) {
+			res.status(422).json({ message: 'Invalid URL' }).send('Invalid URL');
+		} else {
+			const image = await filterImageFromURL(image_url);
 
-		console.log('valid');
+			res.sendFile(image);
 
-		// const image = await filterImageFromURL(
-		// 	'https://cdn.soccerladuma.co.za/cms2/image_manager/uploads/News/659137/7/1563185725_07b1c.jpg',
-		// );
+			const directoryPath = path.join(__dirname, 'util/tmp');
 
-		// res.sendFile(image);
-		console.log(req.url);
-		res.send(image_url);
+			fs.readdir(directoryPath, async function (err, files) {
+				const allFiles: string[] = [];
+				files.forEach(function (file) {
+					allFiles.push(directoryPath + '/' + file);
+				});
+				await deleteLocalFiles(allFiles);
+			});
+		}
 	});
-	//    1
-	//    1. validate the image_url query
-	//    2. call filterImageFromURL(image_url) to filter the image
-	//    3. send the resulting file in the response
-	//    4. deletes any files on the server on finish of the response
-	// QUERY PARAMATERS
-	//    image_url: URL of a publicly accessible image
-	// RETURNS
-	//   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
-
-	/**************************************************************************** */
-
-	//! END @TODO1
 
 	// Root Endpoint
 	// Displays a simple message to the user
