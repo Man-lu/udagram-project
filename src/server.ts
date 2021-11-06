@@ -24,7 +24,10 @@ import { filterImageFromURL, deleteLocalFiles, isValidUrl } from './util/util';
 		const image_url: string = req.query.image_url;
 		const valid_url: boolean = isValidUrl(image_url);
 		if (!valid_url) {
-			res.status(422).json({ message: 'Invalid URL' }).send('Invalid URL');
+			return res
+				.status(422)
+				.json({ message: 'Invalid URL' })
+				.send('Invalid URL');
 		} else {
 			const image = await filterImageFromURL(image_url);
 
