@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 
 import fs from 'fs';
 import path from 'path';
@@ -14,14 +13,14 @@ import { filterImageFromURL, deleteLocalFiles, isValidUrl } from './util/util';
 	const port = process.env.PORT || 8082;
 
 	// Use the body parser middleware for post requests
-	app.use(bodyParser.json());
+	app.use(express.json());
 
 	// @TODO1 IMPLEMENT A RESTFUL ENDPOINT
 	// GET /filteredimage?image_url={{URL}}
 	// endpoint to filter an image from a public url.
 	// IT SHOULD
 	app.get('/filteredimage', async (req, res) => {
-		const image_url: string = req.query.image_url;
+		const image_url: string = req.query.image_url.toString();
 		const valid_url: boolean = isValidUrl(image_url);
 		if (!valid_url) {
 			return res
